@@ -73,8 +73,11 @@ class NomadDeckConfigFlow(ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(
                     title=f"NomadDeck ({host})",
                     data={CONF_HOST: host, CONF_PORT: port},
-                    options={CONF_SCAN_INTERVAL: user_input.get(
-                        CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)},
+                    options={
+                        CONF_SCAN_INTERVAL: user_input.get(
+                            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                        )
+                    },
                 )
 
         return self.async_show_form(
@@ -90,23 +93,26 @@ class NomadDeckConfigFlow(ConfigFlow, domain=DOMAIN):
         return self.async_create_entry(
             title=f"NomadDeck ({host})",
             data={CONF_HOST: host, CONF_PORT: port},
-            options={CONF_SCAN_INTERVAL: import_data.get(
-                CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)},
+            options={
+                CONF_SCAN_INTERVAL: import_data.get(
+                    CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                )
+            },
         )
 
     @staticmethod
     @callback
     def async_get_options_flow(config_entry) -> OptionsFlow:
         """Return the options flow handler."""
-        return NomadDeckOptionsFlow(config_entry)
+        return NomadDeckOptionsFlow()
 
 
 class NomadDeckOptionsFlow(OptionsFlow):
-    """Allow tuning the poll interval after setup."""
+    """Allow tuning the poll interval after setup.
 
-    def __init__(self, config_entry) -> None:
-        """Store the config entry."""
-        self.config_entry = config_entry
+    Home Assistant injects ``self.config_entry`` automatically; it must not be
+    assigned in ``__init__`` (that is deprecated and errors on current cores).
+    """
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
